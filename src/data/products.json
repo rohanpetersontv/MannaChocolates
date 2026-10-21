@@ -1,0 +1,62 @@
+[
+  {
+    "id": "chocolate-bar",
+    "name": "Chocolate Bar",
+    "category": "Bars",
+    "description": "Handcrafted single-origin chocolate bar, tempered to perfection in small fresh batches.",
+    "price": null,
+    "options": [
+      {
+        "name": "Size",
+        "choices": ["50g", "100g", "200g"]
+      },
+      {
+        "name": "Chocolate Base",
+        "choices": ["Dark Chocolate", "Milk Chocolate", "White Chocolate"]
+      },
+      {
+        "name": "Flavour",
+        "choices": ["Plain", "Fruit & Nuts"]
+      }
+    ]
+  },
+  {
+    "id": "chocolate-bites",
+    "name": "Chocolate Bites",
+    "category": "Bites",
+    "description": "Bite-sized molded chocolate pieces (~8g each), ideal for snacking and gifting.",
+    "price": null,
+    "options": [
+      {
+        "name": "Shape",
+        "choices": ["Heart", "Flower"]
+      },
+      {
+        "name": "Chocolate Base",
+        "choices": ["Dark Chocolate", "Milk Chocolate", "White Chocolate"]
+      },
+      {
+        "name": "Flavour",
+        "choices": ["Plain", "Fruit & Nuts", "Paan Special"]
+      }
+    ]
+  },
+  {
+    "id": "gift-pack",
+    "name": "Gift Pack",
+    "category": "Gift Packs",
+    "description": "Curated selection of handcrafted chocolates in a beautiful gift box.",
+    "price": null,
+    "isComingSoon": true,
+    "options": [
+      {
+        "name": "Box Size",
+        "choices": ["Small Box", "Medium Box", "Large Box"]
+      },
+      {
+        "name": "Assortment Base",
+        "choices": ["Dark & Milk Assorted", "All Dark", "All Milk", "White & Flavours"]
+      }
+    ]
+  }
+]
