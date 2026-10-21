@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Plus, Minus, ShoppingBag, Check, MessageSquare, Clock } from 'lucide-react';
-import { Product, formatIndianCurrency } from '../utils/helpers';
+import { Plus, Minus, ShoppingBag, Check, Clock } from 'lucide-react';
+import { Product, formatIndianCurrency, resolveProductPrice } from '../utils/helpers';
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product, selectedOptions: Record<string, string>, quantity: number) => void;
+  onAddToCart: (product: Product, selectedOptions: Record<string, string>, quantity: number, resolvedPrice: number | null) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
@@ -31,13 +31,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
     setQuantity((prev) => Math.max(1, prev + delta));
   };
 
+  // Resolve current price based on selected options
+  const resolvedPrice = resolveProductPrice(product, selectedOptions);
+
   const handleAdd = () => {
     if (product.isComingSoon) return;
     const finalOptions = { ...selectedOptions };
     if (customNote.trim()) {
       finalOptions['Customization'] = customNote.trim();
     }
-    onAddToCart(product, finalOptions, quantity);
+    onAddToCart(product, finalOptions, quantity, resolvedPrice);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1800);
   };
@@ -70,23 +73,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
           </span>
         </div>
 
-        {/* Price status */}
+        {/* Price / Coming Soon badge */}
         <div className="absolute top-3 right-3">
           {product.isComingSoon ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-700 text-white font-semibold text-xs">
               <Clock className="w-3.5 h-3.5" />
               <span>Coming Soon</span>
             </span>
-          ) : product.price !== null ? (
+          ) : resolvedPrice !== null ? (
             <span className="px-3 py-1 rounded-md bg-cocoa text-cream font-bold text-sm">
-              {formatIndianCurrency(product.price)}
+              {formatIndianCurrency(resolvedPrice)}
             </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-cream/95 border border-[#E8DCCF] text-xs font-medium text-espresso">
-              <MessageSquare className="w-3.5 h-3.5 text-green-success" />
-              <span>Price on WhatsApp</span>
-            </span>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -112,6 +110,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
                 <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={option.name}>
                   {option.choices.map((choice) => {
                     const isSelected = selectedOptions[option.name] === choice;
+                    // Compute preview price for this choice
+                    const previewOptions = { ...selectedOptions, [option.name]: choice };
+                    const previewPrice = resolveProductPrice(product, previewOptions);
+
                     return (
                       <button
                         key={choice}
@@ -126,7 +128,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
                             : 'bg-cream text-espresso border border-[#E8DCCF] hover:border-cocoa'
                         } ${product.isComingSoon ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
-                        {choice}
+                        <span>{choice}</span>
+                        {/* Show price hint only for flavour/size buttons where it changes */}
+                        {previewPrice !== null && (option.name === 'Flavour' || option.name === 'Size') && (
+                          <span className={`block text-[10px] leading-tight mt-0.5 ${isSelected ? 'text-cream/80' : 'text-[#9E6938]'}`}>
+                            {formatIndianCurrency(previewPrice)}
+                          </span>
+                        )}
                       </button>
                     );
                   })}
@@ -206,6 +214,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
                   <>
                     <ShoppingBag className="w-4 h-4 text-gold" />
                     <span>Add to Cart</span>
+                    {resolvedPrice !== null && (
+                      <span className="text-gold/90 font-bold">{formatIndianCurrency(resolvedPrice * quantity)}</span>
+                    )}
                   </>
                 )}
               </button>

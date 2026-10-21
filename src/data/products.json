@@ -5,6 +5,11 @@
     "category": "Bars",
     "description": "Handcrafted single-origin chocolate bar, tempered to perfection in small fresh batches.",
     "price": null,
+    "pricingMatrix": {
+      "50g": { "Plain": 90, "Fruit & Nuts": 100 },
+      "100g": { "Plain": 160, "Fruit & Nuts": 180 },
+      "200g": { "Plain": 310, "Fruit & Nuts": 330 }
+    },
     "options": [
       {
         "name": "Size",
@@ -26,6 +31,11 @@
     "category": "Bites",
     "description": "Bite-sized molded chocolate pieces (~8g each), ideal for snacking and gifting.",
     "price": null,
+    "pricingMatrix": {
+      "Plain": 150,
+      "Fruit & Nuts": 160,
+      "Paan Special": 170
+    },
     "options": [
       {
         "name": "Shape",
@@ -43,9 +53,9 @@
   },
   {
     "id": "gift-pack",
-    "name": "Gift Pack",
+    "name": "Manna Chocolate Gift Pack",
     "category": "Gift Packs",
-    "description": "Curated selection of handcrafted chocolates in a beautiful gift box.",
+    "description": "Curated selection of handcrafted Manna chocolates in a beautiful gift box.",
     "price": null,
     "isComingSoon": true,
     "options": [

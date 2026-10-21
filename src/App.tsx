@@ -7,9 +7,10 @@ import { ProductCard } from './components/ProductCard';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { ThankYouModal } from './components/ThankYouModal';
-import { ShoppingBag, ArrowDown, ChevronRight, PhoneCall, Instagram } from 'lucide-react';
+import { ShoppingBag, ArrowDown, ChevronRight, PhoneCall, Instagram, X, Gift, Truck, Package } from 'lucide-react';
 
 const CART_STORAGE_KEY = 'manna_chocolates_cart';
+const FIRST_ORDER_POPUP_KEY = 'manna_first_order_popup_seen';
 
 export const App: React.FC = () => {
   const products: Product[] = productsData as Product[];
@@ -34,6 +35,24 @@ export const App: React.FC = () => {
   const [submittedSecondaryUrl, setSubmittedSecondaryUrl] = useState<string | null>(null);
   const [submittedOrderedItems, setSubmittedOrderedItems] = useState<CartItem[]>([]);
 
+  // First-order popup (show once per session)
+  const [showFirstOrderPopup, setShowFirstOrderPopup] = useState(false);
+
+  useEffect(() => {
+    const alreadySeen = sessionStorage.getItem(FIRST_ORDER_POPUP_KEY);
+    if (!alreadySeen) {
+      const timer = setTimeout(() => {
+        setShowFirstOrderPopup(true);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const dismissPopup = () => {
+    setShowFirstOrderPopup(false);
+    sessionStorage.setItem(FIRST_ORDER_POPUP_KEY, '1');
+  };
+
   // Category filter state
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
@@ -56,8 +75,32 @@ export const App: React.FC = () => {
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Cart operations
-  const handleAddToCart = (product: Product, selectedOptions: Record<string, string>, quantity: number) => {
+  // Compute numeric subtotal (items with known price)
+  const cartSubtotal = cart.reduce((sum, item) => {
+    if (item.unitPrice !== null) return sum + item.unitPrice * item.quantity;
+    return sum;
+  }, 0);
+
+  // Delivery progress thresholds
+  const FREE_LOCAL_THRESHOLD = 500;
+  const FREE_NATIONAL_THRESHOLD = 999;
+
+  const getDeliveryStatus = (): { type: 'none' | 'local' | 'national'; message: string; progress: number } => {
+    if (cartSubtotal >= FREE_NATIONAL_THRESHOLD) {
+      return { type: 'national', message: '🎉 You\'ve unlocked Free Pan-India delivery!', progress: 100 };
+    }
+    if (cartSubtotal >= FREE_LOCAL_THRESHOLD) {
+      const needed = FREE_NATIONAL_THRESHOLD - cartSubtotal;
+      const progress = Math.round((cartSubtotal / FREE_NATIONAL_THRESHOLD) * 100);
+      return { type: 'local', message: `🚚 Free local delivery unlocked! Add ₹${needed} more for Free Pan-India delivery.`, progress };
+    }
+    const needed = FREE_LOCAL_THRESHOLD - cartSubtotal;
+    const progress = Math.round((cartSubtotal / FREE_LOCAL_THRESHOLD) * 100);
+    return { type: 'none', message: `Add ₹${needed} more for Free delivery within 10 km!`, progress };
+  };
+
+  // Cart operations — now accepts resolvedPrice
+  const handleAddToCart = (product: Product, selectedOptions: Record<string, string>, quantity: number, resolvedPrice: number | null) => {
     const optionKey = Object.entries(selectedOptions)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}:${v}`)
@@ -82,7 +125,7 @@ export const App: React.FC = () => {
             name: product.name,
             selectedOptions,
             quantity,
-            unitPrice: product.price,
+            unitPrice: resolvedPrice,
           },
         ];
       }
@@ -144,8 +187,16 @@ export const App: React.FC = () => {
   const instagramUrl = settings.instagramUrl || 'https://www.instagram.com/weekendbusinessmens?utm_source=qr&xtok=MTBqdG4wenVtZmV1ZQ==';
   const instagramHandle = settings.instagramHandle || '@weekendbusinessmens';
 
+  const deliveryStatus = cart.length > 0 ? getDeliveryStatus() : null;
+
   return (
     <div className="min-h-screen bg-cream text-espresso flex flex-col font-sans selection:bg-gold/30 selection:text-espresso overflow-x-hidden">
+      {/* 10% off first order sticky top banner */}
+      <div className="w-full bg-gradient-to-r from-[#7B3F20] via-[#9E6938] to-[#7B3F20] text-cream text-center py-2 px-4 text-xs sm:text-sm font-medium tracking-wide sticky top-0 z-40 flex items-center justify-center gap-2">
+        <Gift className="w-3.5 h-3.5 text-[#F5D78E] flex-shrink-0" />
+        <span>🎉 <strong>10% OFF</strong> on your first delivery order! Use code <strong>FIRST10</strong> — mention it on WhatsApp.</span>
+      </div>
+
       {/* Header */}
       <Header
         cartCount={totalCartCount}
@@ -176,11 +227,17 @@ export const App: React.FC = () => {
               Small-batch chocolates made to order in India. Pick your chocolates below and place your order directly on WhatsApp in under 1 minute.
             </p>
 
-            {/* Factual bullet highlights */}
+            {/* Factual bullet highlights — "No login required" removed */}
             <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-[#68534D]">
-              <span className="px-2.5 py-1 rounded bg-cream border border-[#E8DCCF]">Free delivery within 10 km</span>
-              <span className="px-2.5 py-1 rounded bg-cream border border-[#E8DCCF]">Made fresh to order</span>
-              <span className="px-2.5 py-1 rounded bg-cream border border-[#E8DCCF]">No login required</span>
+              <span className="px-2.5 py-1 rounded bg-cream border border-[#E8DCCF] inline-flex items-center gap-1">
+                <Truck className="w-3 h-3" /> Free delivery within 10 km
+              </span>
+              <span className="px-2.5 py-1 rounded bg-cream border border-[#E8DCCF] inline-flex items-center gap-1">
+                <Package className="w-3 h-3" /> Made fresh to order
+              </span>
+              <span className="px-2.5 py-1 rounded bg-[#FDF6E3] border border-[#E2B774] text-[#7B3F20] font-semibold inline-flex items-center gap-1">
+                <Gift className="w-3 h-3 text-[#9E6938]" /> 10% off first delivery
+              </span>
             </div>
 
             <div className="pt-2">
@@ -329,6 +386,8 @@ export const App: React.FC = () => {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onProceedToCheckout={handleProceedToCheckout}
+        cartSubtotal={cartSubtotal}
+        deliveryStatus={deliveryStatus}
       />
 
       {/* Checkout Modal */}
@@ -349,6 +408,62 @@ export const App: React.FC = () => {
         orderedItems={submittedOrderedItems}
         onClose={() => setIsThankYouOpen(false)}
       />
+
+      {/* First Order 10% OFF Popup */}
+      {showFirstOrderPopup && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-espresso/60 backdrop-blur-sm p-4"
+          onClick={dismissPopup}
+        >
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center border border-[#E8DCCF] animate-popup"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={dismissPopup}
+              className="absolute top-3 right-3 p-1.5 text-espresso/50 hover:text-espresso rounded-full hover:bg-cream transition-colors"
+              aria-label="Close popup"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Confetti / emoji accent */}
+            <div className="text-4xl mb-3">🍫🎉</div>
+
+            <div className="inline-block bg-gradient-to-r from-[#7B3F20] to-[#9E6938] text-cream text-xs font-bold px-3 py-1 rounded-full mb-3 tracking-wide uppercase">
+              Welcome Offer
+            </div>
+
+            <h2 className="font-serif text-2xl font-bold text-espresso mb-2">
+              10% OFF Your First Delivery!
+            </h2>
+
+            <p className="text-sm text-[#68534D] leading-relaxed mb-4">
+              Enjoy an exclusive <strong>10% discount</strong> on your very first delivery order from Manna Chocolates. Just mention code&nbsp;
+              <strong className="text-cocoa">FIRST10</strong> when you WhatsApp us your order.
+            </p>
+
+            {/* Delivery info */}
+            <div className="bg-[#FDF6E3] border border-[#E2B774] rounded-lg p-3 mb-4 text-xs text-[#7B3F20] space-y-1">
+              <div className="flex items-center gap-2 justify-center">
+                <Truck className="w-3.5 h-3.5" />
+                <span>Free delivery within 10 km on orders above ₹500</span>
+              </div>
+              <div className="flex items-center gap-2 justify-center">
+                <Package className="w-3.5 h-3.5" />
+                <span>Free Pan-India delivery on orders above ₹999</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => { dismissPopup(); scrollToProducts(); }}
+              className="w-full min-h-[48px] bg-cocoa hover:bg-espresso text-cream font-semibold rounded-lg transition-colors text-sm"
+            >
+              Shop Now 🛍️
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

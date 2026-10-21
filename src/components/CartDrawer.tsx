@@ -1,6 +1,12 @@
 import React from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, Package, CheckCircle2 } from 'lucide-react';
 import { CartItem, formatIndianCurrency, calculateCartSubtotal } from '../utils/helpers';
+
+interface DeliveryStatus {
+  type: 'none' | 'local' | 'national';
+  message: string;
+  progress: number;
+}
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -9,6 +15,8 @@ interface CartDrawerProps {
   onUpdateQuantity: (id: string, delta: number) => void;
   onRemoveItem: (id: string) => void;
   onProceedToCheckout: () => void;
+  cartSubtotal: number;
+  deliveryStatus: DeliveryStatus | null;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -18,6 +26,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onUpdateQuantity,
   onRemoveItem,
   onProceedToCheckout,
+  cartSubtotal,
+  deliveryStatus,
 }) => {
   if (!isOpen) return null;
 
@@ -55,6 +65,51 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <X className="w-5 h-5" />
             </button>
           </div>
+
+          {/* Delivery Progress Bar — shown when cart has items */}
+          {items.length > 0 && deliveryStatus && (
+            <div className={`px-5 py-3 border-b border-[#E8DCCF] ${
+              deliveryStatus.type === 'national'
+                ? 'bg-green-50'
+                : deliveryStatus.type === 'local'
+                ? 'bg-[#FDF6E3]'
+                : 'bg-[#FDF6E3]'
+            }`}>
+              <div className="flex items-center gap-2 mb-1.5">
+                {deliveryStatus.type === 'national' ? (
+                  <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+                ) : deliveryStatus.type === 'local' ? (
+                  <Truck className="w-4 h-4 text-[#9E6938] flex-shrink-0" />
+                ) : (
+                  <Package className="w-4 h-4 text-[#9E6938] flex-shrink-0" />
+                )}
+                <p className={`text-xs font-semibold ${
+                  deliveryStatus.type === 'national' ? 'text-green-700' : 'text-[#7B3F20]'
+                }`}>
+                  {deliveryStatus.message}
+                </p>
+              </div>
+              {/* Progress bar */}
+              <div className="w-full h-2 bg-[#E8DCCF] rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    deliveryStatus.type === 'national'
+                      ? 'bg-green-500'
+                      : deliveryStatus.type === 'local'
+                      ? 'bg-[#9E6938]'
+                      : 'bg-[#C8A15A]'
+                  }`}
+                  style={{ width: `${deliveryStatus.progress}%` }}
+                />
+              </div>
+              {/* Milestone markers */}
+              <div className="flex justify-between text-[10px] text-[#9E6938] mt-1">
+                <span>₹0</span>
+                <span className={cartSubtotal >= 500 ? 'font-bold text-green-700' : ''}>₹500 Local free</span>
+                <span className={cartSubtotal >= 999 ? 'font-bold text-green-700' : ''}>₹999 Pan-India free</span>
+              </div>
+            </div>
+          )}
 
           {/* Items List / Empty State */}
           <div className="flex-1 overflow-y-auto p-5 space-y-3.5">
@@ -165,6 +220,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           {/* Footer */}
           {items.length > 0 && (
             <div className="p-5 border-t border-[#E8DCCF] bg-white space-y-3">
+              {/* Delivery charge summary */}
+              <div className="text-xs text-[#68534D] space-y-0.5">
+                <div className="flex items-center gap-1.5">
+                  <Truck className="w-3.5 h-3.5 text-[#9E6938]" />
+                  <span>Free within 10 km on orders above ₹500</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Package className="w-3.5 h-3.5 text-[#9E6938]" />
+                  <span>Free Pan-India on orders above ₹999</span>
+                </div>
+              </div>
+
               <div className="flex items-baseline justify-between text-sm">
                 <span className="text-[#68534D]">Estimated Total:</span>
                 <div>

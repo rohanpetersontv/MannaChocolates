@@ -11,6 +11,40 @@ export interface Product {
   price: number | null;
   isComingSoon?: boolean;
   options: ProductOption[];
+  /** Pricing matrix keyed by size (bars) or flavour (bites) → price or sub-object */
+  pricingMatrix?: Record<string, Record<string, number> | number>;
+}
+
+/**
+ * Resolves the unit price for a product given selected options.
+ * For bars: looks up pricingMatrix[Size][Flavour]
+ * For bites: looks up pricingMatrix[Flavour]
+ * Falls back to product.price if no matrix defined.
+ */
+export function resolveProductPrice(
+  product: Product,
+  selectedOptions: Record<string, string>
+): number | null {
+  if (!product.pricingMatrix) return product.price;
+
+  const size = selectedOptions['Size'];
+  const flavour = selectedOptions['Flavour'];
+
+  if (size && flavour) {
+    // Bar pricing: matrix[size][flavour]
+    const sizeEntry = product.pricingMatrix[size];
+    if (sizeEntry && typeof sizeEntry === 'object' && flavour in sizeEntry) {
+      return (sizeEntry as Record<string, number>)[flavour];
+    }
+  }
+
+  if (flavour && !size) {
+    // Bites pricing: matrix[flavour]
+    const flavourEntry = product.pricingMatrix[flavour];
+    if (typeof flavourEntry === 'number') return flavourEntry;
+  }
+
+  return product.price;
 }
 
 export interface CartItem {
