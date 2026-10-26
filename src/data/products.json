@@ -36,6 +36,10 @@
       "Fruit & Nuts": 160,
       "Paan Special": 170
     },
+    "flavourDescriptions": {
+      "Fruit & Nuts": "Indulge in a royal fusion of rich, premium dark chocolate and traditional warmth. Our Fruit & Nut Bites feature hand-selected almonds and cashews gently fried to golden perfection in pure desi ghee, paired with sweet, juicy raisins. Each 8-gram heart and flower piece delivers a delightful crunch, followed by a smooth, velvety dark chocolate finish that melts in your mouth.",
+      "Paan Special": "Experience the nostalgic, refreshing burst of traditional Indian paan reimagined in luxurious chocolate. Infused with aromatic pan flavor essence and studded with crunchy, vibrant Colorful Mukhwas, every 8-gram heart and flower bite delivers a delightful burst of aromatic sweetness followed by a smooth, melting finish. It's the ultimate post-meal mouth freshener and indulgence rolled into one."
+    },
     "options": [
       {
         "name": "Shape",
@@ -48,6 +52,26 @@
       {
         "name": "Flavour",
         "choices": ["Plain", "Fruit & Nuts", "Paan Special"]
+      }
+    ]
+  },
+  {
+    "id": "midnight-orange-bites",
+    "name": "Midnight Orange Bites",
+    "category": "Bites",
+    "label": "Special Flavour",
+    "description": "Awaken your senses with Canberrys Almond Premium Orange Dark Chocolate. Each 8-gram masterpiece marries the deep, intense notes of premium dark chocolate with a refreshing citrus burst of sun-ripened orange. Studded with crunchy almonds and artisanal texture, these heart and flower bites offer a luxurious balance of bitter, sweet, and zesty perfection in every single bite.",
+    "price": 190,
+    "pricingMatrix": null,
+    "image": "/images/midnight_orange_bites.jpg",
+    "options": [
+      {
+        "name": "Shape",
+        "choices": ["Heart", "Flower"]
+      },
+      {
+        "name": "Pack",
+        "choices": ["15 Pieces"]
       }
     ]
   },

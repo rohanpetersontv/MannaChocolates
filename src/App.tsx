@@ -243,7 +243,7 @@ export const App: React.FC = () => {
             <div className="pt-2">
               <button
                 onClick={scrollToProducts}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[48px] bg-cocoa hover:bg-espresso text-cream font-medium rounded-lg transition-colors text-sm sm:text-base"
+                className="btn-shimmer inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[48px] bg-cocoa hover:bg-espresso text-cream font-medium rounded-lg transition-all duration-200 text-sm sm:text-base hover:shadow-md active:scale-[0.98]"
               >
                 <span>View Chocolates</span>
                 <ArrowDown className="w-4 h-4 text-gold" />
@@ -269,10 +269,10 @@ export const App: React.FC = () => {
                     onClick={() => setSelectedCategory(category)}
                     role="tab"
                     aria-selected={isSelected}
-                    className={`px-3.5 py-1.5 min-h-[40px] rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                    className={`category-pill px-3.5 py-1.5 min-h-[40px] rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
                       isSelected
-                        ? 'bg-cocoa text-cream font-semibold'
-                        : 'bg-white text-espresso border border-[#E8DCCF] hover:border-cocoa'
+                        ? 'bg-cocoa text-cream font-semibold shadow-sm'
+                        : 'bg-white text-espresso border border-[#E8DCCF] hover:border-cocoa hover:bg-[#FDF6E3] hover:text-cocoa'
                     }`}
                   >
                     {category}
@@ -317,7 +317,7 @@ export const App: React.FC = () => {
             </div>
             <button
               onClick={() => setIsCartOpen(true)}
-              className="px-3.5 py-2 min-h-[40px] bg-cocoa text-cream text-xs font-medium rounded-md hover:bg-espresso flex items-center gap-1 transition-colors"
+              className="px-3.5 py-2 min-h-[40px] bg-cocoa text-cream text-xs font-medium rounded-md hover:bg-espresso flex items-center gap-1 transition-all duration-200 active:scale-[0.97]"
             >
               <span>View Cart</span>
               <ChevronRight className="w-3.5 h-3.5 text-gold" />
@@ -346,7 +346,7 @@ export const App: React.FC = () => {
             href="https://wa.me/919449802000"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-cream border border-[#E8DCCF] hover:border-cocoa text-espresso transition-colors font-medium text-xs min-h-[36px]"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-cream border border-[#E8DCCF] hover:border-green-success/60 hover:bg-green-success/5 text-espresso transition-all duration-200 font-medium text-xs min-h-[36px]"
           >
             <PhoneCall className="w-3.5 h-3.5 text-green-success" />
             <span>WhatsApp: 94498 02000</span>
@@ -356,7 +356,7 @@ export const App: React.FC = () => {
             href="https://wa.me/916362551322"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-cream border border-[#E8DCCF] hover:border-cocoa text-espresso transition-colors font-medium text-xs min-h-[36px]"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-cream border border-[#E8DCCF] hover:border-cocoa hover:bg-cocoa/5 text-espresso transition-all duration-200 font-medium text-xs min-h-[36px]"
           >
             <PhoneCall className="w-3.5 h-3.5 text-cocoa" />
             <span>Call / WhatsApp: 63625 51322</span>
@@ -366,7 +366,7 @@ export const App: React.FC = () => {
             href={instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-cream border border-[#E8DCCF] hover:border-cocoa text-espresso transition-colors font-medium text-xs min-h-[36px]"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-cream border border-[#E8DCCF] hover:border-[#C13584]/50 hover:bg-[#C13584]/5 text-espresso transition-all duration-200 font-medium text-xs min-h-[36px]"
           >
             <Instagram className="w-3.5 h-3.5 text-[#C13584]" />
             <span>Instagram: {instagramHandle}</span>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Minus, ShoppingBag, Check, Clock } from 'lucide-react';
+import { Plus, Minus, ShoppingBag, Check, Clock, Sparkles } from 'lucide-react';
 import { Product, formatIndianCurrency, resolveProductPrice } from '../utils/helpers';
 
 interface ProductCardProps {
@@ -46,6 +46,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
   };
 
   const getImage = (id: string, category: string) => {
+    if (product.image) return product.image;
     if (id.startsWith('bar') || id.includes('bar')) return '/images/dark_chocolate_bar.jpg';
     if (id.includes('bites') || category.toLowerCase().includes('bites')) return '/images/chocolate_bites.jpg';
     return '/images/gift_pack.jpg';
@@ -53,25 +54,58 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
 
   const imageSrc = getImage(product.id, product.category);
 
+  // Determine dynamic flavour description if product has per-flavour descriptions
+  const activeFlavour = selectedOptions['Flavour'];
+  const activeFlavourDesc =
+    activeFlavour && product.flavourDescriptions && product.flavourDescriptions[activeFlavour]
+      ? product.flavourDescriptions[activeFlavour]
+      : null;
+  const displayDescription = activeFlavourDesc || product.description;
+
+  const isSpecial = !!product.label;
+
   return (
-    <article className={`rounded-xl bg-white border ${
-      product.isComingSoon ? 'border-[#E8DCCF] opacity-80' : 'border-[#E8DCCF] hover:border-bronze shadow-card'
-    } transition-colors flex flex-col overflow-hidden`}>
+    <article
+      className={`product-card rounded-xl bg-white border flex flex-col overflow-hidden ${
+        product.isComingSoon
+          ? 'border-[#E8DCCF] opacity-80'
+          : isSpecial
+          ? 'border-[#C8A15A] shadow-card hover:shadow-card-hover hover:border-[#9E6938]'
+          : 'border-[#E8DCCF] shadow-card hover:shadow-card-hover hover:border-bronze'
+      } transition-all duration-300`}
+    >
       {/* Product Image */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-cream">
         <img
           src={imageSrc}
           alt={product.name}
-          className={`w-full h-full object-cover ${product.isComingSoon ? 'grayscale-[25%]' : 'img-zoom'}`}
+          className={`w-full h-full object-cover card-image-zoom ${product.isComingSoon ? 'grayscale-[25%]' : ''}`}
           loading="lazy"
         />
-        
-        {/* Category tag */}
-        <div className="absolute top-3 left-3">
-          <span className="px-2.5 py-1 rounded-md bg-cream/95 text-espresso border border-[#E8DCCF] text-xs font-semibold uppercase tracking-wider">
-            {product.category}
-          </span>
-        </div>
+
+        {/* Gradient overlay on hover for depth */}
+        {!product.isComingSoon && (
+          <div className="absolute inset-0 bg-gradient-to-t from-espresso/20 via-transparent to-transparent card-overlay opacity-0 transition-opacity duration-300" />
+        )}
+
+        {/* Special Flavour label badge */}
+        {isSpecial && (
+          <div className="absolute top-3 left-3">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gradient-to-r from-[#7B3F20] to-[#C8A15A] text-white text-xs font-bold uppercase tracking-wider shadow-md">
+              <Sparkles className="w-3 h-3" />
+              {product.label}
+            </span>
+          </div>
+        )}
+
+        {/* Category tag (only shown when no special label) */}
+        {!isSpecial && (
+          <div className="absolute top-3 left-3">
+            <span className="px-2.5 py-1 rounded-md bg-cream/95 text-espresso border border-[#E8DCCF] text-xs font-semibold uppercase tracking-wider">
+              {product.category}
+            </span>
+          </div>
+        )}
 
         {/* Price / Coming Soon badge */}
         <div className="absolute top-3 right-3">
@@ -81,7 +115,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
               <span>Coming Soon</span>
             </span>
           ) : resolvedPrice !== null ? (
-            <span className="px-3 py-1 rounded-md bg-cocoa text-cream font-bold text-sm">
+            <span className={`px-3 py-1 rounded-md font-bold text-sm ${isSpecial ? 'bg-gradient-to-r from-[#7B3F20] to-[#9E6938] text-cream' : 'bg-cocoa text-cream'}`}>
               {formatIndianCurrency(resolvedPrice)}
             </span>
           ) : null}
@@ -91,11 +125,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
       {/* Content */}
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div className="space-y-1.5">
-          <h3 className="font-serif text-xl sm:text-2xl font-bold text-espresso">
+          <h3 className={`font-serif text-xl sm:text-2xl font-bold ${isSpecial ? 'text-[#7B3F20]' : 'text-espresso'}`}>
             {product.name}
           </h3>
-          <p className="text-sm text-[#68534D] leading-relaxed">
-            {product.description}
+          <p className="text-sm text-[#68534D] leading-relaxed transition-all duration-300">
+            {displayDescription}
           </p>
         </div>
 
@@ -122,10 +156,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
                         aria-checked={isSelected}
                         disabled={product.isComingSoon}
                         onClick={() => handleOptionChange(option.name, choice)}
-                        className={`px-3 py-1.5 min-h-[38px] rounded-md text-xs font-medium transition-colors ${
+                        className={`px-3 py-1.5 min-h-[38px] rounded-md text-xs font-medium transition-all duration-200 ${
                           isSelected
-                            ? 'bg-cocoa text-cream font-semibold'
-                            : 'bg-cream text-espresso border border-[#E8DCCF] hover:border-cocoa'
+                            ? isSpecial
+                              ? 'bg-gradient-to-r from-[#7B3F20] to-[#9E6938] text-cream font-semibold shadow-sm'
+                              : 'bg-cocoa text-cream font-semibold'
+                            : 'bg-cream text-espresso border border-[#E8DCCF] hover:border-cocoa hover:bg-[#FDF6E3]'
                         } ${product.isComingSoon ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
                         <span>{choice}</span>
@@ -156,7 +192,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
               value={customNote}
               onChange={(e) => setCustomNote(e.target.value)}
               placeholder="e.g. less sweet, extra nuts..."
-              className="w-full px-3 py-2 text-xs rounded-md border border-[#E8DCCF] bg-white text-espresso placeholder-[#A69389] focus:outline-none focus:ring-1 focus:ring-cocoa"
+              className="w-full px-3 py-2 text-xs rounded-md border border-[#E8DCCF] bg-white text-espresso placeholder-[#A69389] focus:outline-none focus:ring-1 focus:ring-cocoa transition-colors hover:border-cocoa/60"
             />
           </div>
         )}
@@ -173,11 +209,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
           ) : (
             <>
               {/* Stepper */}
-              <div className="flex items-center bg-cream rounded-lg border border-[#E8DCCF] min-h-[48px]">
+              <div className="flex items-center bg-cream rounded-lg border border-[#E8DCCF] min-h-[48px] hover:border-cocoa/60 transition-colors duration-200">
                 <button
                   type="button"
                   onClick={() => handleQuantityDelta(-1)}
-                  className="w-10 h-10 flex items-center justify-center text-espresso hover:bg-[#E8DCCF]/50 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center text-espresso hover:bg-[#E8DCCF]/70 active:scale-95 transition-all duration-150 rounded-l-lg"
                   aria-label={`Decrease quantity of ${product.name}`}
                 >
                   <Minus className="w-3.5 h-3.5" />
@@ -188,7 +224,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
                 <button
                   type="button"
                   onClick={() => handleQuantityDelta(1)}
-                  className="w-10 h-10 flex items-center justify-center text-espresso hover:bg-[#E8DCCF]/50 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center text-espresso hover:bg-[#E8DCCF]/70 active:scale-95 transition-all duration-150 rounded-r-lg"
                   aria-label={`Increase quantity of ${product.name}`}
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -199,10 +235,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
               <button
                 type="button"
                 onClick={handleAdd}
-                className={`flex-1 min-h-[48px] px-4 py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
+                className={`flex-1 min-h-[48px] px-4 py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] ${
                   justAdded
                     ? 'bg-green-success text-white added-indicator'
-                    : 'bg-cocoa hover:bg-espresso text-cream'
+                    : isSpecial
+                    ? 'bg-gradient-to-r from-[#7B3F20] to-[#9E6938] hover:from-[#321B16] hover:to-[#7B3F20] text-cream shadow-sm hover:shadow-md'
+                    : 'bg-cocoa hover:bg-espresso text-cream hover:shadow-sm'
                 }`}
               >
                 {justAdded ? (

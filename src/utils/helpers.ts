@@ -12,7 +12,13 @@ export interface Product {
   isComingSoon?: boolean;
   options: ProductOption[];
   /** Pricing matrix keyed by size (bars) or flavour (bites) → price or sub-object */
-  pricingMatrix?: Record<string, Record<string, number> | number>;
+  pricingMatrix?: Record<string, Record<string, number> | number> | null;
+  /** Optional badge label shown on the card (e.g. "Special Flavour") */
+  label?: string;
+  /** Optional custom image path for products that don't follow the default pattern */
+  image?: string;
+  /** Optional per-flavour descriptions shown when that flavour is selected */
+  flavourDescriptions?: Record<string, string>;
 }
 
 /**
