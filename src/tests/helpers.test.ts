@@ -183,6 +183,22 @@ describe('6. WhatsApp Message Builder & Link Generator', () => {
     expect(msg).toContain('Notes: None');
   });
 
+  it('includes handwritten gift note details when gifting is selected', () => {
+    const giftForm: OrderForm = {
+      ...form,
+      isGift: true,
+      giftRecipient: 'Mom',
+      giftSender: 'Rohan',
+      giftMessage: 'Happy Birthday! Hope you love these chocolates.',
+    };
+    const msg = buildWhatsAppMessage(giftForm, items, null, null);
+    expect(msg).toContain('🎁 Gifting Request:');
+    expect(msg).toContain('To: Mom');
+    expect(msg).toContain('From: Rohan');
+    expect(msg).toContain('Handwritten Note: "Happy Birthday! Hope you love these chocolates."');
+    expect(msg).toContain('(Please include a complimentary handwritten card & gift ribbon)');
+  });
+
   it('omits address line for Pickup orders', () => {
     const pickupForm: OrderForm = { ...form, orderType: 'Pickup', address: '', pincode: '' };
     const msg = buildWhatsAppMessage(pickupForm, items, null, null);

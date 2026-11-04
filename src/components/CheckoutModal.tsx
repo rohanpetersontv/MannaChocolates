@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Send, AlertCircle, Calendar, MapPin, Phone, User, MessageSquare, Truck, Store, Check } from 'lucide-react';
+import { X, Send, AlertCircle, Calendar, MapPin, Phone, User, MessageSquare, Truck, Store, Check, Gift } from 'lucide-react';
 import {
   CartItem,
   OrderForm,
@@ -45,6 +45,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     pincode: '',
     neededByDate: todayStr,
     notes: '',
+    isGift: false,
+    giftRecipient: '',
+    giftSender: '',
+    giftMessage: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -381,10 +385,84 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             )}
           </div>
 
-          {/* Gift Message / Special Notes */}
+          {/* ── Gifting Option: Handwritten Card & Packaging ── */}
+          <div
+            className="rounded-2xl p-4 transition-all"
+            style={{
+              background: formData.isGift ? 'rgba(196,131,74,0.08)' : '#F5EDE0',
+              border: formData.isGift ? '1px solid rgba(196,131,74,0.35)' : '1px solid rgba(74,26,8,0.08)',
+            }}
+          >
+            <label className="flex items-start gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!!formData.isGift}
+                onChange={(e) => setFormData({ ...formData, isGift: e.target.checked })}
+                className="w-4 h-4 mt-0.5 rounded accent-[#6B2D0F] cursor-pointer"
+              />
+              <div className="flex-1">
+                <div className="flex items-center gap-1.5 font-bold text-xs" style={{ color: '#4A1A08' }}>
+                  <Gift className="w-3.5 h-3.5 text-cocoa" />
+                  <span>Send as a Gift (Includes Free Handwritten Note & Ribbon)</span>
+                </div>
+                <p className="text-[11px] leading-relaxed mt-0.5" style={{ color: '#7A5140' }}>
+                  Sending to a loved one? We'll handwrite your custom card and wrap your box with our signature ribbon at no extra charge.
+                </p>
+              </div>
+            </label>
+
+            {formData.isGift && (
+              <div className="mt-3.5 pt-3 border-t border-espresso/10 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <label htmlFor="gift-to" className="block text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#7A5140' }}>
+                      To (Recipient)
+                    </label>
+                    <input
+                      id="gift-to"
+                      type="text"
+                      value={formData.giftRecipient || ''}
+                      onChange={(e) => setFormData({ ...formData, giftRecipient: e.target.value })}
+                      placeholder="e.g. Mom, Sarah, Rohit"
+                      className="w-full px-3 py-2 rounded-xl text-xs bg-white text-espresso border border-espresso/10 focus:outline-none focus:ring-1 focus:ring-cocoa/30"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="gift-from" className="block text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#7A5140' }}>
+                      From (Your Name)
+                    </label>
+                    <input
+                      id="gift-from"
+                      type="text"
+                      value={formData.giftSender || ''}
+                      onChange={(e) => setFormData({ ...formData, giftSender: e.target.value })}
+                      placeholder="e.g. With love from Rohan"
+                      className="w-full px-3 py-2 rounded-xl text-xs bg-white text-espresso border border-espresso/10 focus:outline-none focus:ring-1 focus:ring-cocoa/30"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="gift-message" className="block text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#7A5140' }}>
+                    Gift Card Message
+                  </label>
+                  <textarea
+                    id="gift-message"
+                    rows={2}
+                    value={formData.giftMessage || ''}
+                    onChange={(e) => setFormData({ ...formData, giftMessage: e.target.value })}
+                    placeholder="Wishing you a sweet celebration! Hope you love these handcrafted chocolates…"
+                    className="w-full px-3 py-2 rounded-xl text-xs bg-white text-espresso border border-espresso/10 focus:outline-none focus:ring-1 focus:ring-cocoa/30 leading-relaxed"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Delivery Notes & Special Requests */}
           <div>
             <label htmlFor="order-notes" className="block text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: '#7A5140' }}>
-              Notes or Gift Message <span className="font-normal normal-case" style={{ color: '#C4834A' }}>(optional)</span>
+              Delivery Notes or Special Requests <span className="font-normal normal-case" style={{ color: '#C4834A' }}>(optional)</span>
             </label>
             <div className="relative">
               <MessageSquare className="absolute left-3 top-3 w-4 h-4" style={{ color: '#C4834A' }} />
@@ -393,7 +471,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 rows={2}
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Gift message or special requests…"
+                placeholder="Gate code, landmark, calling instructions, etc."
                 className="w-full pl-9 pr-3 py-2 rounded-xl text-sm focus:outline-none transition-all"
                 style={{
                   background: '#F5EDE0',

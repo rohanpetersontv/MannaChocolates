@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Minus, ShoppingBag, Check, Clock, Sparkles, Heart } from 'lucide-react';
+import { Plus, Minus, ShoppingBag, Check, Clock, Sparkles, Heart, Info, X } from 'lucide-react';
 import { Product, formatIndianCurrency, resolveProductPrice } from '../utils/helpers';
 
 interface ProductCardProps {
@@ -20,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleOptionChange = (name: string, choice: string) =>
     setSelectedOptions((prev) => ({ ...prev, [name]: choice }));
@@ -46,6 +47,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
   };
 
   const imageSrc = getImage(product.id, product.category);
+  const webpSrc = imageSrc.replace(/\.(jpg|jpeg|png)$/, '.webp');
   const activeFlavour = selectedOptions['Flavour'];
   const activeFlavourDesc =
     activeFlavour && product.flavourDescriptions?.[activeFlavour]
@@ -100,12 +102,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
           </div>
         )}
 
-        <img
-          src={imageSrc}
-          alt={product.name}
-          className="card-image-zoom w-full h-48 object-cover"
-          loading="lazy"
-        />
+        <picture>
+          <source srcSet={webpSrc} type="image/webp" />
+          <img
+            src={imageSrc}
+            alt={product.name}
+            className="card-image-zoom w-full h-48 object-cover"
+            loading="lazy"
+          />
+        </picture>
       </div>
 
       {/* ── Content ── */}
@@ -130,6 +135,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
         <p className="text-xs text-espresso/55 leading-relaxed line-clamp-2">
           {displayDescription}
         </p>
+
+        {/* Dietary & Storage Quick Badges + Toggle */}
+        <div className="flex items-center flex-wrap gap-1.5 pt-0.5">
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block" />
+            100% Veg
+          </span>
+          <span className="inline-flex items-center text-[10px] font-medium text-espresso/60 bg-espresso/5 px-2 py-0.5 rounded-full">
+            Zero Preservatives
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowInfo(!showInfo)}
+            className="text-[10px] font-semibold text-cocoa hover:text-espresso flex items-center gap-1 ml-auto py-0.5 px-1.5 rounded hover:bg-cocoa/5 transition-colors"
+          >
+            <Info className="w-3 h-3" />
+            <span>{showInfo ? 'Close Details' : 'Storage & Allergens'}</span>
+          </button>
+        </div>
+
+        {/* Expandable Storage & Allergen Info Drawer */}
+        {showInfo && (
+          <div className="p-3.5 rounded-2xl text-[11px] leading-relaxed bg-[#F5EDE0] border border-espresso/10 space-y-1.5 animate-popup shadow-sm">
+            <div className="flex items-center justify-between font-bold text-espresso text-[11px] pb-1 border-b border-espresso/10">
+              <span className="font-serif text-cocoa">Artisanal Details & Care</span>
+              <button
+                type="button"
+                onClick={() => setShowInfo(false)}
+                className="text-espresso/40 hover:text-espresso p-0.5"
+                aria-label="Close details"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <p><strong className="text-cocoa font-semibold">🌿 Dietary:</strong> 100% Vegetarian & Eggless.</p>
+            <p><strong className="text-cocoa font-semibold">🌰 Allergens:</strong> Contains milk solids. Nut varieties contain premium almonds & cashews roasted in pure desi ghee.</p>
+            <p><strong className="text-cocoa font-semibold">🌡️ Storage:</strong> Store in a cool, dry place (18°–22°C). In warm weather, store in an airtight container in the refrigerator and rest 10 mins before eating.</p>
+            <p><strong className="text-cocoa font-semibold">⏳ Shelf Life:</strong> 45 days from dispatch (fresh small-batch preparation).</p>
+          </div>
+        )}
 
         {/* Divider */}
         <div className="h-px bg-espresso/6" />

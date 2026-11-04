@@ -2,20 +2,70 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manna Chocolates | Handcrafted Chocolate Boutique</title>
+
+    <!-- Favicon & Touch Icons -->
     <link rel="icon" type="image/jpeg" href="/images/logo.jpg" />
     <link rel="apple-touch-icon" href="/images/logo.jpg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#4A1A08" />
-    <meta name="description" content="Manna Chocolates — Home-based small-batch handcrafted chocolates in India. Order directly on WhatsApp." />
-    <title>Manna Chocolates | Handcrafted Chocolate Boutique</title>
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="Manna Chocolates, handcrafted chocolate, artisan chocolate India, chocolate bites, Paan chocolate, Berry Blue chocolate, Butterscotch chocolate, Bangalore chocolate gifts, eggless chocolates" />
+    <meta name="description" content="Manna Chocolates — Home-based small-batch handcrafted chocolates in India. 100% vegetarian, pure ingredients, zero preservatives. Order directly on WhatsApp." />
+
+    <!-- Open Graph / WhatsApp / Facebook Preview Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Manna Chocolates" />
+    <meta property="og:title" content="Manna Chocolates | Handcrafted Artisanal Chocolates" />
+    <meta property="og:description" content="Boutique handcrafted chocolates made fresh to order in small batches. 100% vegetarian, no preservatives. Order directly on WhatsApp!" />
+    <meta property="og:image" content="/images/combo_chocolates.jpg" />
+    <meta property="og:image:secure_url" content="/images/combo_chocolates.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Manna Chocolates Handcrafted Assortment & Gift Tubs" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Manna Chocolates | Handcrafted Artisanal Chocolates" />
+    <meta name="twitter:description" content="Artisanal small-batch chocolates made fresh to order in India. 100% vegetarian, no preservatives. Order directly on WhatsApp!" />
+    <meta name="twitter:image" content="/images/combo_chocolates.jpg" />
+    <meta name="twitter:image:alt" content="Manna Chocolates Artisanal Collection" />
+
+    <!-- Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Schema.org JSON-LD Structured Data for Search Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Bakery",
+        "name": "Manna Chocolates",
+        "image": "/images/combo_chocolates.jpg",
+        "description": "Home-based handcrafted artisanal chocolates made fresh to order in small batches. 100% vegetarian, zero preservatives.",
+        "telephone": "+919449802000",
+        "priceRange": "₹₹",
+        "currenciesAccepted": "INR",
+        "paymentAccepted": "WhatsApp Order, UPI, GPay, PhonePe",
+        "servesCuisine": "Artisanal Chocolates & Confectionery",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "IN"
+        },
+        "offers": {
+          "@type": "AggregateOffer",
+          "priceCurrency": "INR",
+          "lowPrice": "65",
+          "highPrice": "340"
+        }
+      }
+    </script>
   </head>
   <body class="bg-[#F9F5F0] text-[#2E0E00] font-sans antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
-

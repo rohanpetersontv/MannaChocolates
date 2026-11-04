@@ -121,12 +121,15 @@ export const Gallery: React.FC = () => {
             >
               {/* Image Container */}
               <div className="relative aspect-[4/5] overflow-hidden bg-[#2E0E00]/5">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
-                  loading="lazy"
-                />
+                <picture>
+                  <source srcSet={item.image.replace(/\.(jpg|jpeg|png)$/, '.webp')} type="image/webp" />
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
+                    loading="lazy"
+                  />
+                </picture>
 
                 {/* Top Badge */}
                 <div className="absolute top-4 left-4 z-10">
@@ -219,11 +222,14 @@ export const Gallery: React.FC = () => {
 
             {/* Left Image View with Nav Arrows */}
             <div className="md:w-3/5 relative bg-[#1A0800] flex items-center justify-center overflow-hidden min-h-[300px] md:min-h-[500px]">
-              <img
-                src={activeItem.image}
-                alt={activeItem.title}
-                className="w-full h-full object-contain max-h-[70vh] md:max-h-[85vh]"
-              />
+              <picture className="w-full h-full flex items-center justify-center">
+                <source srcSet={activeItem.image.replace(/\.(jpg|jpeg|png)$/, '.webp')} type="image/webp" />
+                <img
+                  src={activeItem.image}
+                  alt={activeItem.title}
+                  className="w-full h-full object-contain max-h-[70vh] md:max-h-[85vh]"
+                />
+              </picture>
 
               {/* Prev Arrow */}
               <button
@@ -320,3 +326,4 @@ export const Gallery: React.FC = () => {
     </section>
   );
 };
+

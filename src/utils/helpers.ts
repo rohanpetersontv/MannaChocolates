@@ -88,6 +88,10 @@ export interface OrderForm {
   pincode: string;
   neededByDate: string; // YYYY-MM-DD
   notes: string;
+  isGift?: boolean;
+  giftRecipient?: string;
+  giftSender?: string;
+  giftMessage?: string;
 }
 
 export interface Settings {
@@ -271,6 +275,15 @@ export function buildWhatsAppMessage(
     }
   } else {
     lines.push('Total: to be confirmed');
+  }
+
+  if (form.isGift || form.giftMessage?.trim()) {
+    lines.push('');
+    lines.push('🎁 Gifting Request:');
+    if (form.giftRecipient?.trim()) lines.push(`  To: ${form.giftRecipient.trim()}`);
+    if (form.giftSender?.trim()) lines.push(`  From: ${form.giftSender.trim()}`);
+    if (form.giftMessage?.trim()) lines.push(`  Handwritten Note: "${form.giftMessage.trim()}"`);
+    lines.push('  (Please include a complimentary handwritten card & gift ribbon)');
   }
 
   lines.push(`Notes: ${form.notes.trim() ? form.notes.trim() : 'None'}`);
