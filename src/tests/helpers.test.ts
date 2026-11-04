@@ -8,6 +8,8 @@ import {
   formatContactDisplay,
   buildWhatsAppMessage,
   buildWhatsAppUrl,
+  resolveProductPrice,
+  Product,
   CartItem,
   OrderForm,
 } from '../utils/helpers';
@@ -196,5 +198,63 @@ describe('6. WhatsApp Message Builder & Link Generator', () => {
   it('returns null if WhatsApp number is empty/unset in settings', () => {
     expect(buildWhatsAppUrl('', 'Test message')).toBeNull();
     expect(buildWhatsAppUrl(null, 'Test message')).toBeNull();
+  });
+});
+
+describe('7. Product Price Resolution', () => {
+  const berryBlueProduct: Product = {
+    id: 'berry-blue-special',
+    name: 'Berry Blue',
+    category: 'Special Flavours',
+    description: 'Test Berry Blue',
+    price: null,
+    pricingMatrix: {
+      'Mini Bar': 65,
+      'Bites (15 Pcs)': 180,
+      '50g Bar': 110,
+      '100g Bar': 190,
+      '150g Bar': 270,
+      '200g Bar': 340,
+    },
+    options: [
+      {
+        name: 'Format',
+        choices: ['Mini Bar', 'Bites (15 Pcs)', '50g Bar', '100g Bar', '150g Bar', '200g Bar'],
+      },
+    ],
+  };
+
+  it('resolves prices for Berry Blue special formats (Mini Bar, Bites, 50g, 100g, 150g, 200g)', () => {
+    expect(resolveProductPrice(berryBlueProduct, { Format: 'Mini Bar' })).toBe(65);
+    expect(resolveProductPrice(berryBlueProduct, { Format: 'Bites (15 Pcs)' })).toBe(180);
+    expect(resolveProductPrice(berryBlueProduct, { Format: '50g Bar' })).toBe(110);
+    expect(resolveProductPrice(berryBlueProduct, { Format: '100g Bar' })).toBe(190);
+    expect(resolveProductPrice(berryBlueProduct, { Format: '150g Bar' })).toBe(270);
+    expect(resolveProductPrice(berryBlueProduct, { Format: '200g Bar' })).toBe(340);
+  });
+
+  const barProduct: Product = {
+    id: 'chocolate-bar',
+    name: 'Chocolate Bar',
+    category: 'Bars',
+    description: 'Test Bar',
+    price: null,
+    pricingMatrix: {
+      '50g': { Plain: 90, 'Fruit & Nuts': 100 },
+      '100g': { Plain: 160, 'Fruit & Nuts': 180 },
+      '150g': { Plain: 240, 'Fruit & Nuts': 260 },
+      '200g': { Plain: 310, 'Fruit & Nuts': 330 },
+    },
+    options: [
+      { name: 'Size', choices: ['50g', '100g', '150g', '200g'] },
+      { name: 'Flavour', choices: ['Plain', 'Fruit & Nuts'] },
+    ],
+  };
+
+  it('resolves prices for standard bar sizes including 150g', () => {
+    expect(resolveProductPrice(barProduct, { Size: '50g', Flavour: 'Plain' })).toBe(90);
+    expect(resolveProductPrice(barProduct, { Size: '150g', Flavour: 'Plain' })).toBe(240);
+    expect(resolveProductPrice(barProduct, { Size: '150g', Flavour: 'Fruit & Nuts' })).toBe(260);
+    expect(resolveProductPrice(barProduct, { Size: '200g', Flavour: 'Fruit & Nuts' })).toBe(330);
   });
 });

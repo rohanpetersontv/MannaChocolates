@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, Package, CheckCircle2 } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, Package, CheckCircle2, Sparkles } from 'lucide-react';
 import { CartItem, formatIndianCurrency, calculateCartSubtotal } from '../utils/helpers';
 
 interface DeliveryStatus {
@@ -19,197 +19,127 @@ interface CartDrawerProps {
   deliveryStatus: DeliveryStatus | null;
 }
 
+const getImage = (productId: string) => {
+  if (productId.includes('paan'))   return '/images/paan_bites.jpg';
+  if (productId.includes('orange')) return '/images/midnight_orange_bites.jpg';
+  if (productId.includes('bar'))    return '/images/dark_chocolate_bar.jpg';
+  if (productId.includes('bites'))  return '/images/chocolate_bites.jpg';
+  return '/images/gift_pack.jpg';
+};
+
 export const CartDrawer: React.FC<CartDrawerProps> = ({
-  isOpen,
-  onClose,
-  items,
-  onUpdateQuantity,
-  onRemoveItem,
-  onProceedToCheckout,
-  cartSubtotal,
-  deliveryStatus,
+  isOpen, onClose, items, onUpdateQuantity, onRemoveItem, onProceedToCheckout, cartSubtotal, deliveryStatus,
 }) => {
   if (!isOpen) return null;
 
   const subtotal = calculateCartSubtotal(items);
-  const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-
-  const getImage = (productId: string) => {
-    if (productId.startsWith('bar') || productId.includes('bar')) return '/images/dark_chocolate_bar.jpg';
-    if (productId.includes('bites')) return '/images/chocolate_bites.jpg';
-    return '/images/gift_pack.jpg';
-  };
+  const totalItemCount = items.reduce((s, i) => s + i.quantity, 0);
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-hidden bg-espresso/50 backdrop-blur-2xs transition-opacity"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="cart-drawer-title"
+      className="fixed inset-0 z-50 overflow-hidden"
+      style={{ background: 'rgba(46,14,0,0.5)', backdropFilter: 'blur(8px)' }}
+      role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title"
     >
       <div className="fixed inset-y-0 right-0 flex max-w-full pl-6 sm:pl-10">
-        <div className="w-screen max-w-md bg-cream border-l border-[#E8DCCF] text-espresso shadow-sheet flex flex-col drawer-enter">
+        <div className="w-screen max-w-md flex flex-col drawer-bg drawer-enter" style={{ borderLeft: '1px solid rgba(74,26,8,0.08)', boxShadow: '-8px 0 40px rgba(46,14,0,0.12)' }}>
+
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8DCCF] bg-white">
-            <div className="flex items-center gap-2.5">
-              <ShoppingBag className="w-5 h-5 text-cocoa" />
-              <h2 id="cart-drawer-title" className="font-serif text-xl font-bold text-espresso">
-                Your Cart {totalItemCount > 0 && `(${totalItemCount})`}
-              </h2>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-espresso/8">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(107,45,15,0.09)' }}>
+                <ShoppingBag className="w-4 h-4" style={{ color: '#6B2D0F' }} />
+              </div>
+              <div>
+                <h2 id="cart-drawer-title" className="font-serif text-lg font-bold text-espresso leading-tight">Your Cart</h2>
+                {totalItemCount > 0 && <p className="text-[11px] text-espresso/40">{totalItemCount} {totalItemCount === 1 ? 'item' : 'items'}</p>}
+              </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 -mr-2 text-espresso/70 hover:text-espresso rounded-md hover:bg-cream transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-              aria-label="Close cart"
-            >
-              <X className="w-5 h-5" />
+            <button onClick={onClose} aria-label="Close cart"
+              className="w-9 h-9 flex items-center justify-center rounded-full border border-espresso/10 text-espresso/40 hover:text-espresso hover:border-espresso/25 hover:bg-espresso/4 transition-all">
+              <X className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Delivery Progress Bar — shown when cart has items */}
+          {/* Delivery Progress */}
           {items.length > 0 && deliveryStatus && (
-            <div className={`px-5 py-3 border-b border-[#E8DCCF] ${
-              deliveryStatus.type === 'national'
-                ? 'bg-green-50'
-                : deliveryStatus.type === 'local'
-                ? 'bg-[#FDF6E3]'
-                : 'bg-[#FDF6E3]'
-            }`}>
+            <div className="px-5 py-3" style={{ background: 'rgba(107,45,15,0.04)', borderBottom: '1px solid rgba(107,45,15,0.07)' }}>
               <div className="flex items-center gap-2 mb-1.5">
-                {deliveryStatus.type === 'national' ? (
-                  <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
-                ) : deliveryStatus.type === 'local' ? (
-                  <Truck className="w-4 h-4 text-[#9E6938] flex-shrink-0" />
-                ) : (
-                  <Package className="w-4 h-4 text-[#9E6938] flex-shrink-0" />
-                )}
-                <p className={`text-xs font-semibold ${
-                  deliveryStatus.type === 'national' ? 'text-green-700' : 'text-[#7B3F20]'
-                }`}>
+                {deliveryStatus.type === 'national'
+                  ? <CheckCircle2 className="w-3.5 h-3.5 text-green-success flex-shrink-0" />
+                  : <Truck className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#6B2D0F' }} />}
+                <p className={`text-xs font-semibold ${deliveryStatus.type === 'national' ? 'text-green-success' : 'text-cocoa'}`}>
                   {deliveryStatus.message}
                 </p>
               </div>
-              {/* Progress bar */}
-              <div className="w-full h-2 bg-[#E8DCCF] rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    deliveryStatus.type === 'national'
-                      ? 'bg-green-500'
-                      : deliveryStatus.type === 'local'
-                      ? 'bg-[#9E6938]'
-                      : 'bg-[#C8A15A]'
-                  }`}
-                  style={{ width: `${deliveryStatus.progress}%` }}
-                />
+              <div className="w-full h-1.5 rounded-full overflow-hidden bg-espresso/8">
+                <div className="h-full rounded-full transition-all duration-700"
+                  style={{
+                    width: `${deliveryStatus.progress}%`,
+                    background: deliveryStatus.type === 'national'
+                      ? 'linear-gradient(90deg, #26734D, #34d399)'
+                      : 'linear-gradient(90deg, #6B2D0F, #C4834A)',
+                  }} />
               </div>
-              {/* Milestone markers */}
-              <div className="flex justify-between text-[10px] text-[#9E6938] mt-1">
+              <div className="flex justify-between text-[10px] text-espresso/35 mt-1">
                 <span>₹0</span>
-                <span className={cartSubtotal >= 500 ? 'font-bold text-green-700' : ''}>₹500 Local free</span>
-                <span className={cartSubtotal >= 999 ? 'font-bold text-green-700' : ''}>₹999 Pan-India free</span>
+                <span className={cartSubtotal >= 500 ? 'text-green-success font-bold' : ''}>₹500</span>
+                <span className={cartSubtotal >= 999 ? 'text-green-success font-bold' : ''}>₹999 Pan-India</span>
               </div>
             </div>
           )}
 
-          {/* Items List / Empty State */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-3.5">
+          {/* Items */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {items.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-3">
-                <img
-                  src="/images/logo.jpg"
-                  alt="Manna Chocolates"
-                  className="w-16 h-16 rounded-full object-cover border border-[#C8A15A]/70 shadow-xs mx-auto mb-1"
-                />
-                <div className="space-y-1">
-                  <p className="font-serif text-lg font-bold text-espresso">Your cart is empty</p>
-                  <p className="text-xs text-[#68534D]">
-                    Pick chocolates from the collection to start your order.
-                  </p>
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
+                <img src="/images/logo.jpg" alt="Manna" className="w-20 h-20 rounded-full object-cover border-2 border-espresso/10" />
+                <div>
+                  <p className="font-serif text-xl font-bold text-espresso">Your cart is empty</p>
+                  <p className="text-xs text-espresso/40 mt-1 max-w-xs">Browse our handcrafted chocolates and place your order.</p>
                 </div>
-                <button
-                  onClick={onClose}
-                  className="mt-2 px-5 py-2.5 min-h-[48px] bg-cocoa text-cream text-sm font-medium rounded-lg hover:bg-espresso transition-colors"
-                >
-                  Browse Chocolates
-                </button>
+                <button onClick={onClose} className="btn-choco px-6 py-2.5 text-sm mt-2">Browse Chocolates</button>
               </div>
             ) : (
               items.map((item) => {
-                const optValues = Object.entries(item.selectedOptions);
-                const itemTotal = item.unitPrice !== null ? item.unitPrice * item.quantity : null;
-                const thumbSrc = getImage(item.productId);
-
+                const opts = Object.entries(item.selectedOptions);
+                const total = item.unitPrice !== null ? item.unitPrice * item.quantity : null;
                 return (
-                  <div
-                    key={item.id}
-                    className="p-3.5 rounded-lg bg-white border border-[#E8DCCF] space-y-2.5"
-                  >
+                  <div key={item.id} className="p-3.5 rounded-2xl border border-espresso/7 bg-parchment/50 space-y-2.5">
                     <div className="flex items-start gap-3">
-                      <img
-                        src={thumbSrc}
-                        alt={item.name}
-                        className="w-14 h-14 rounded-md object-cover border border-[#E8DCCF] flex-shrink-0"
-                      />
+                      <img src={getImage(item.productId)} alt={item.name}
+                        className="w-14 h-14 rounded-xl object-cover border border-espresso/8 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-serif font-bold text-base text-espresso leading-snug truncate">
-                          {item.name}
-                        </h3>
-                        {optValues.length > 0 && (
-                          <div className="flex flex-wrap gap-1 text-[11px] text-[#68534D] mt-1">
-                            {optValues.map(([k, v]) => (
-                              <span
-                                key={k}
-                                className="px-1.5 py-0.5 rounded bg-cream border border-[#E8DCCF]"
-                              >
-                                {v}
-                              </span>
+                        <h3 className="font-serif font-bold text-sm text-espresso leading-snug truncate">{item.name}</h3>
+                        {opts.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {opts.map(([k, v]) => (
+                              <span key={k} className="px-1.5 py-0.5 rounded text-[10px] text-cocoa font-medium"
+                                style={{ background: 'rgba(107,45,15,0.08)' }}>{v}</span>
                             ))}
                           </div>
                         )}
                       </div>
-                      <button
-                        onClick={() => onRemoveItem(item.id)}
-                        className="text-espresso/50 hover:text-red-700 p-1.5 -mr-1 rounded min-w-[36px] min-h-[36px] flex items-center justify-center transition-colors"
-                        aria-label={`Remove ${item.name}`}
-                      >
-                        <Trash2 className="w-4 h-4" />
+                      <button onClick={() => onRemoveItem(item.id)} aria-label={`Remove ${item.name}`}
+                        className="text-espresso/20 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-50 transition-all min-w-[32px] min-h-[32px] flex items-center justify-center">
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-[#F2EAE0]">
-                      {/* Stepper */}
-                      <div className="flex items-center bg-cream border border-[#E8DCCF] rounded-md">
-                        <button
-                          onClick={() => onUpdateQuantity(item.id, -1)}
-                          className="w-8 h-8 flex items-center justify-center text-espresso hover:bg-[#E8DCCF]/50 transition-colors"
-                          aria-label={`Decrease quantity of ${item.name}`}
-                        >
+                    <div className="flex items-center justify-between pt-2 border-t border-espresso/6">
+                      <div className="flex items-center rounded-full overflow-hidden border border-espresso/10"
+                        style={{ background: '#fff' }}>
+                        <button onClick={() => onUpdateQuantity(item.id, -1)} className="w-8 h-8 flex items-center justify-center text-espresso/40 hover:text-espresso hover:bg-espresso/5 transition-all" aria-label="Decrease">
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-7 text-center font-bold text-espresso text-xs" aria-live="polite">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => onUpdateQuantity(item.id, 1)}
-                          className="w-8 h-8 flex items-center justify-center text-espresso hover:bg-[#E8DCCF]/50 transition-colors"
-                          aria-label={`Increase quantity of ${item.name}`}
-                        >
+                        <span className="w-7 text-center font-bold text-espresso text-xs" aria-live="polite">{item.quantity}</span>
+                        <button onClick={() => onUpdateQuantity(item.id, 1)} className="w-8 h-8 flex items-center justify-center text-espresso/40 hover:text-espresso hover:bg-espresso/5 transition-all" aria-label="Increase">
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
-
-                      {/* Line total */}
-                      <div className="text-right">
-                        {itemTotal !== null ? (
-                          <span className="font-bold text-base text-cocoa">
-                            {formatIndianCurrency(itemTotal)}
-                          </span>
-                        ) : (
-                          <span className="text-xs font-medium text-[#7A5A4A] italic">
-                            Price on WhatsApp
-                          </span>
-                        )}
-                      </div>
+                      {total !== null
+                        ? <span className="font-bold text-base" style={{ color: '#6B2D0F' }}>{formatIndianCurrency(total)}</span>
+                        : <span className="text-xs text-espresso/40 italic">Price on WhatsApp</span>}
                     </div>
                   </div>
                 );
@@ -219,39 +149,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
           {/* Footer */}
           {items.length > 0 && (
-            <div className="p-5 border-t border-[#E8DCCF] bg-white space-y-3">
-              {/* Delivery charge summary */}
-              <div className="text-xs text-[#68534D] space-y-0.5">
-                <div className="flex items-center gap-1.5">
-                  <Truck className="w-3.5 h-3.5 text-[#9E6938]" />
-                  <span>Free within 10 km on orders above ₹500</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Package className="w-3.5 h-3.5 text-[#9E6938]" />
-                  <span>Free Pan-India on orders above ₹999</span>
-                </div>
+            <div className="p-5 space-y-4 border-t border-espresso/8 bg-parchment/30">
+              <div className="space-y-1 text-xs text-espresso/40">
+                <div className="flex items-center gap-1.5"><Truck className="w-3 h-3 text-cocoa/50" /><span>Free within 10 km on orders above ₹500</span></div>
+                <div className="flex items-center gap-1.5"><Package className="w-3 h-3 text-cocoa/50" /><span>Free Pan-India shipping above ₹999</span></div>
               </div>
 
-              <div className="flex items-baseline justify-between text-sm">
-                <span className="text-[#68534D]">Estimated Total:</span>
-                <div>
-                  {subtotal !== null ? (
-                    <span className="font-serif text-xl font-bold text-cocoa">
-                      {formatIndianCurrency(subtotal)}
-                    </span>
-                  ) : (
-                    <span className="font-medium text-xs sm:text-sm text-espresso italic">
-                      Total will be shared on WhatsApp
-                    </span>
-                  )}
-                </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-espresso/55">Estimated Total</span>
+                {subtotal !== null
+                  ? <span className="font-serif text-2xl font-bold" style={{ color: '#4A1A08' }}>{formatIndianCurrency(subtotal)}</span>
+                  : <span className="text-sm text-espresso/40 italic">Confirmed on WhatsApp</span>}
               </div>
 
-              <button
-                onClick={onProceedToCheckout}
-                className="w-full min-h-[48px] px-5 py-3 bg-cocoa hover:bg-espresso text-cream font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors active:scale-[0.99] text-base"
-              >
-                <span>Continue</span>
+              <button onClick={onProceedToCheckout}
+                className="btn-choco w-full min-h-[50px] rounded-2xl font-bold text-base flex items-center justify-center gap-2.5">
+                <Sparkles className="w-4 h-4" />
+                Proceed to Order
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

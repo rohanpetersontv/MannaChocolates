@@ -113,35 +113,49 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-espresso/60 backdrop-blur-2xs flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 sm:p-6"
+      style={{ background: 'rgba(46,14,0,0.55)', backdropFilter: 'blur(10px)' }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="checkout-dialog-title"
     >
-      <div className="relative w-full max-w-lg bg-cream rounded-xl shadow-sheet border border-[#E8DCCF] overflow-hidden text-espresso my-8 dialog-fade">
+      <div
+        className="relative w-full max-w-lg overflow-hidden my-8 dialog-fade rounded-3xl"
+        style={{
+          background: '#fff',
+          border: '1px solid rgba(74,26,8,0.08)',
+          boxShadow: '0 32px 80px rgba(46,14,0,0.2)',
+          color: '#2E0E00',
+        }}
+      >
+        {/* Top brown accent bar */}
+        <div className="h-1.5 rounded-t-3xl" style={{ background: 'linear-gradient(90deg, #4A1A08, #C4834A, #4A1A08)' }} />
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#E8DCCF] bg-white flex items-center justify-between">
+        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(74,26,8,0.07)' }}>
           <div className="flex items-center gap-3">
-            <img
-              src="/images/logo.jpg"
-              alt="Manna Chocolates"
-              className="w-10 h-10 rounded-full object-cover border border-[#C8A15A]/70 shadow-xs"
-            />
+            <div className="p-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, #C4834A, #6B2D0F)' }}>
+              <img
+                src="/images/logo.jpg"
+                alt="Manna Chocolates"
+                className="w-9 h-9 rounded-full object-cover"
+                style={{ border: '2px solid #fff' }}
+              />
+            </div>
             <div>
-              <h2 id="checkout-dialog-title" className="font-serif text-xl font-bold text-espresso leading-tight">
-                Checkout
+              <h2 id="checkout-dialog-title" className="font-serif text-lg font-bold leading-tight" style={{ color: '#4A1A08' }}>
+                Complete Your Order
               </h2>
-              <p className="text-xs text-[#68534D]">
-                Order directly via WhatsApp in under 1 minute
+              <p className="text-[11px]" style={{ color: '#C4834A' }}>
+                Sent directly via WhatsApp · under 1 minute
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 -mr-2 text-espresso/70 hover:text-espresso rounded-md hover:bg-cream transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="w-9 h-9 flex items-center justify-center rounded-full border border-espresso/10 text-espresso/30 hover:text-espresso hover:border-espresso/25 transition-all"
             aria-label="Close checkout"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -149,11 +163,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4">
           {/* Customer Name */}
           <div>
-            <label htmlFor="customer-name" className="block text-xs font-semibold uppercase tracking-wider text-espresso mb-1">
-              Your Name <span className="text-red-700">*</span>
+            <label htmlFor="customer-name" className="block text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: '#7A5140' }}>
+              Your Name <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C7668]" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#C4834A' }} />
               <input
                 id="customer-name"
                 type="text"
@@ -164,13 +178,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   if (attemptedSubmit) setErrors({ ...errors, name: '' });
                 }}
                 placeholder="Your name"
-                className={`w-full pl-10 pr-3.5 py-2.5 min-h-[48px] rounded-lg border ${
-                  errors.name ? 'border-red-600 bg-red-50/50' : 'border-[#E8DCCF] bg-white'
-                } text-espresso placeholder-[#A69389] focus:outline-none focus:ring-1 focus:ring-cocoa text-base`}
+                className="w-full pl-10 pr-3.5 py-2.5 min-h-[48px] rounded-xl text-base focus:outline-none transition-all"
+                style={{
+                  background: errors.name ? 'rgba(220,38,38,0.06)' : '#F5EDE0',
+                  border: errors.name ? '1px solid rgba(220,38,38,0.4)' : '1px solid rgba(74,26,8,0.1)',
+                  color: '#2E0E00',
+                }}
               />
             </div>
             {errors.name && (
-              <p className="mt-1 text-xs text-red-700 flex items-center gap-1">
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" /> {errors.name}
               </p>
             )}
@@ -178,11 +195,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
           {/* Customer Phone */}
           <div>
-            <label htmlFor="customer-phone" className="block text-xs font-semibold uppercase tracking-wider text-espresso mb-1">
-              WhatsApp Phone Number <span className="text-red-700">*</span>
+            <label htmlFor="customer-phone" className="block text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: '#7A5140' }}>
+              WhatsApp Phone Number <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C7668]" />
+              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#C4834A' }} />
               <input
                 id="customer-phone"
                 type="tel"
@@ -193,77 +210,73 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   if (attemptedSubmit) setErrors({ ...errors, phone: '' });
                 }}
                 placeholder="10-digit mobile number"
-                className={`w-full pl-10 pr-3.5 py-2.5 min-h-[48px] rounded-lg border ${
-                  errors.phone ? 'border-red-600 bg-red-50/50' : 'border-[#E8DCCF] bg-white'
-                } text-espresso placeholder-[#A69389] focus:outline-none focus:ring-1 focus:ring-cocoa text-base`}
+                className="w-full pl-10 pr-3.5 py-2.5 min-h-[48px] rounded-xl text-base focus:outline-none transition-all"
+                style={{
+                  background: errors.phone ? 'rgba(220,38,38,0.06)' : '#F5EDE0',
+                  border: errors.phone ? '1px solid rgba(220,38,38,0.4)' : '1px solid rgba(74,26,8,0.1)',
+                  color: '#2E0E00',
+                }}
               />
             </div>
             {errors.phone ? (
-              <p className="mt-1 text-xs text-red-700 flex items-center gap-1">
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" /> {errors.phone}
               </p>
             ) : (
-              <p className="mt-1 text-xs text-[#68534D]">
-                We reply to this number to confirm availability.
+              <p className="mt-1 text-[11px]" style={{ color: '#7A5140' }}>
+                We reply to this number on WhatsApp to confirm availability.
               </p>
             )}
           </div>
 
           {/* Order Method */}
           <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-espresso mb-1.5">
+            <span className="block text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: '#7A5140' }}>
               Order Type
             </span>
             <div className="grid grid-cols-2 gap-2.5">
-              <label
-                className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer min-h-[48px] transition-colors ${
-                  formData.orderType === 'Delivery'
-                    ? 'border-cocoa bg-white font-medium text-espresso'
-                    : 'border-[#E8DCCF] bg-cream text-[#68534D]'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="orderType"
-                  value="Delivery"
-                  checked={formData.orderType === 'Delivery'}
-                  onChange={() => setFormData({ ...formData, orderType: 'Delivery' })}
-                  className="w-4 h-4 text-cocoa"
-                />
-                <Truck className="w-4 h-4 text-cocoa" />
-                <span className="text-sm">Delivery</span>
-              </label>
-
-              <label
-                className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer min-h-[48px] transition-colors ${
-                  formData.orderType === 'Pickup'
-                    ? 'border-cocoa bg-white font-medium text-espresso'
-                    : 'border-[#E8DCCF] bg-cream text-[#68534D]'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="orderType"
-                  value="Pickup"
-                  checked={formData.orderType === 'Pickup'}
-                  onChange={() => setFormData({ ...formData, orderType: 'Pickup' })}
-                  className="w-4 h-4 text-cocoa"
-                />
-                <Store className="w-4 h-4 text-cocoa" />
-                <span className="text-sm">Pickup</span>
-              </label>
+              {(['Delivery', 'Pickup'] as const).map((type) => {
+                const isActive = formData.orderType === type;
+                const Icon = type === 'Delivery' ? Truck : Store;
+                return (
+                  <label
+                    key={type}
+                    className="flex items-center gap-2.5 p-3 rounded-xl cursor-pointer min-h-[48px] transition-all"
+                    style={isActive ? {
+                      background: 'rgba(107,45,15,0.08)',
+                      border: '1px solid rgba(107,45,15,0.3)',
+                      color: '#6B2D0F',
+                    } : {
+                      background: '#F5EDE0',
+                      border: '1px solid rgba(74,26,8,0.08)',
+                      color: '#7A5140',
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="orderType"
+                      value={type}
+                      checked={isActive}
+                      onChange={() => setFormData({ ...formData, orderType: type })}
+                      className="w-4 h-4"
+                    />
+                    <Icon className="w-4 h-4" />
+                    <span className="text-sm font-medium">{type}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
           {/* Conditional Address & Pincode for Delivery */}
           {formData.orderType === 'Delivery' && (
-            <div className="p-3.5 rounded-lg bg-white border border-[#E8DCCF] space-y-3">
+            <div className="rounded-2xl p-4 space-y-3" style={{ background: '#F5EDE0', border: '1px solid rgba(74,26,8,0.08)' }}>
               <div>
-                <label htmlFor="delivery-address" className="block text-xs font-semibold text-espresso mb-1">
-                  Address <span className="text-red-700">*</span>
+                <label htmlFor="delivery-address" className="block text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: '#7A5140' }}>
+                  Address <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-3 w-4 h-4 text-[#8C7668]" />
+                  <MapPin className="absolute left-3 top-3 w-4 h-4" style={{ color: '#C4834A' }} />
                   <textarea
                     id="delivery-address"
                     rows={2}
@@ -273,21 +286,24 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       if (attemptedSubmit) setErrors({ ...errors, address: '' });
                     }}
                     placeholder="House/flat no., street, landmark, area"
-                    className={`w-full pl-9 pr-3 py-2 rounded-md border ${
-                      errors.address ? 'border-red-600 bg-red-50/50' : 'border-[#E8DCCF] bg-cream'
-                    } text-espresso placeholder-[#A69389] focus:outline-none focus:ring-1 focus:ring-cocoa text-sm`}
+                    className="w-full pl-9 pr-3 py-2 rounded-xl text-sm focus:outline-none transition-all"
+                    style={{
+                      background: errors.address ? 'rgba(220,38,38,0.06)' : '#fff',
+                      border: errors.address ? '1px solid rgba(220,38,38,0.4)' : '1px solid rgba(74,26,8,0.1)',
+                      color: '#2E0E00',
+                    }}
                   />
                 </div>
                 {errors.address && (
-                  <p className="mt-1 text-xs text-red-700 flex items-center gap-1">
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5" /> {errors.address}
                   </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="delivery-pincode" className="block text-xs font-semibold text-espresso mb-1">
-                  Pincode <span className="text-red-700">*</span>
+                <label htmlFor="delivery-pincode" className="block text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: '#7A5140' }}>
+                  Pincode <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="delivery-pincode"
@@ -299,30 +315,35 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     if (attemptedSubmit) setErrors({ ...errors, pincode: '' });
                   }}
                   placeholder="6-digit pincode"
-                  className={`w-full px-3 py-2.5 min-h-[48px] rounded-md border ${
-                    errors.pincode ? 'border-red-600 bg-red-50/50' : 'border-[#E8DCCF] bg-cream'
-                  } text-espresso placeholder-[#A69389] focus:outline-none focus:ring-1 focus:ring-cocoa text-sm`}
+                  className="w-full px-3 py-2.5 min-h-[44px] rounded-xl text-sm focus:outline-none transition-all"
+                  style={{
+                    background: errors.pincode ? 'rgba(220,38,38,0.06)' : '#fff',
+                    border: errors.pincode ? '1px solid rgba(220,38,38,0.4)' : '1px solid rgba(74,26,8,0.1)',
+                    color: '#2E0E00',
+                  }}
                 />
                 {errors.pincode && (
-                  <p className="mt-1 text-xs text-red-700 flex items-center gap-1">
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5" /> {errors.pincode}
                   </p>
                 )}
               </div>
 
-              {/* Delivery rule notice: free within 10 km via freeDeliveryPincodes, otherwise charges confirmed on WhatsApp */}
               <div
-                className={`p-2.5 rounded-md border text-xs flex items-start gap-2 ${
-                  deliveryInfo.isFree
-                    ? 'bg-emerald-50 border-emerald-300 text-green-success font-medium'
-                    : 'bg-cream border-[#E8DCCF] text-[#68534D]'
-                }`}
+                className="p-2.5 rounded-xl text-xs flex items-start gap-2"
+                style={deliveryInfo.isFree ? {
+                  background: 'rgba(38,115,77,0.08)',
+                  border: '1px solid rgba(38,115,77,0.25)',
+                  color: '#26734D',
+                } : {
+                  background: 'rgba(107,45,15,0.06)',
+                  border: '1px solid rgba(107,45,15,0.12)',
+                  color: '#7A5140',
+                }}
               >
-                {deliveryInfo.isFree ? (
-                  <Check className="w-4 h-4 text-green-success flex-shrink-0 mt-0.5" />
-                ) : (
-                  <Truck className="w-4 h-4 text-cocoa flex-shrink-0 mt-0.5" />
-                )}
+                {deliveryInfo.isFree
+                  ? <Check className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  : <Truck className="w-4 h-4 flex-shrink-0 mt-0.5" />}
                 <span>{deliveryInfo.note}</span>
               </div>
             </div>
@@ -330,11 +351,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
           {/* Needed By Date */}
           <div>
-            <label htmlFor="needed-by-date" className="block text-xs font-semibold uppercase tracking-wider text-espresso mb-1">
-              Needed By Date <span className="text-red-700">*</span>
+            <label htmlFor="needed-by-date" className="block text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: '#7A5140' }}>
+              Needed By Date <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C7668]" />
+              <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#C4834A' }} />
               <input
                 id="needed-by-date"
                 type="date"
@@ -344,13 +365,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   setFormData({ ...formData, neededByDate: e.target.value });
                   if (attemptedSubmit) setErrors({ ...errors, neededByDate: '' });
                 }}
-                className={`w-full pl-10 pr-3.5 py-2.5 min-h-[48px] rounded-lg border ${
-                  errors.neededByDate ? 'border-red-600 bg-red-50/50' : 'border-[#E8DCCF] bg-white'
-                } text-espresso focus:outline-none focus:ring-1 focus:ring-cocoa text-sm`}
+                className="w-full pl-10 pr-3.5 py-2.5 min-h-[48px] rounded-xl text-sm focus:outline-none transition-all"
+                style={{
+                  background: errors.neededByDate ? 'rgba(220,38,38,0.06)' : '#F5EDE0',
+                  border: errors.neededByDate ? '1px solid rgba(220,38,38,0.4)' : '1px solid rgba(74,26,8,0.1)',
+                  color: '#2E0E00',
+                  colorScheme: 'light',
+                }}
               />
             </div>
             {errors.neededByDate && (
-              <p className="mt-1 text-xs text-red-700 flex items-center gap-1">
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" /> {errors.neededByDate}
               </p>
             )}
@@ -358,39 +383,42 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
           {/* Gift Message / Special Notes */}
           <div>
-            <label htmlFor="order-notes" className="block text-xs font-semibold uppercase tracking-wider text-espresso mb-1">
-              Notes or Gift Message <span className="text-[#8C7668] font-normal lowercase">(optional)</span>
+            <label htmlFor="order-notes" className="block text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: '#7A5140' }}>
+              Notes or Gift Message <span className="font-normal normal-case" style={{ color: '#C4834A' }}>(optional)</span>
             </label>
             <div className="relative">
-              <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-[#8C7668]" />
+              <MessageSquare className="absolute left-3 top-3 w-4 h-4" style={{ color: '#C4834A' }} />
               <textarea
                 id="order-notes"
                 rows={2}
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Gift message or special requests (optional)"
-                className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E8DCCF] bg-white text-espresso placeholder-[#A69389] focus:outline-none focus:ring-1 focus:ring-cocoa text-sm"
+                placeholder="Gift message or special requests…"
+                className="w-full pl-9 pr-3 py-2 rounded-xl text-sm focus:outline-none transition-all"
+                style={{
+                  background: '#F5EDE0',
+                  border: '1px solid rgba(74,26,8,0.1)',
+                  color: '#2E0E00',
+                }}
               />
             </div>
           </div>
 
           {/* Summary */}
-          <div className="pt-2 border-t border-[#E8DCCF] text-xs space-y-1 text-[#68534D]">
-            <div className="flex justify-between">
-              <span>Items count:</span>
-              <span className="font-semibold text-espresso">
-                {items.reduce((s, i) => s + i.quantity, 0)} items
-              </span>
+          <div className="pt-3 space-y-2" style={{ borderTop: '1px solid rgba(74,26,8,0.08)' }}>
+            <div className="flex justify-between text-xs" style={{ color: '#7A5140' }}>
+              <span>Items in order</span>
+              <span className="font-semibold" style={{ color: '#4A1A08' }}>{items.reduce((s, i) => s + i.quantity, 0)} items</span>
             </div>
-            <div className="flex justify-between items-baseline pt-0.5">
-              <span>Estimated Total:</span>
+            <div className="flex justify-between items-baseline">
+              <span className="text-xs" style={{ color: '#7A5140' }}>Estimated Total</span>
               <div>
                 {subtotal !== null ? (
-                  <span className="font-serif font-bold text-base text-cocoa">
+                  <span className="font-serif font-bold text-xl" style={{ color: '#4A1A08' }}>
                     {formatIndianCurrency(subtotal)}
                   </span>
                 ) : (
-                  <span className="font-medium text-espresso italic">To be confirmed</span>
+                  <span className="text-sm italic" style={{ color: '#7A5140' }}>Confirmed on WhatsApp</span>
                 )}
               </div>
             </div>
@@ -399,10 +427,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {/* Submit */}
           <button
             type="submit"
-            className="w-full min-h-[48px] px-5 py-3 bg-cocoa hover:bg-espresso text-cream font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors active:scale-[0.99] text-base"
+            className="btn-choco w-full min-h-[52px] rounded-2xl font-bold text-base flex items-center justify-center gap-2.5"
           >
             <Send className="w-4 h-4" />
-            <span>Send Order</span>
+            <span>Send Order via WhatsApp</span>
           </button>
         </form>
       </div>

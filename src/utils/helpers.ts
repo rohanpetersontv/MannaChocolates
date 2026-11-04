@@ -35,19 +35,37 @@ export function resolveProductPrice(
 
   const size = selectedOptions['Size'];
   const flavour = selectedOptions['Flavour'];
+  const format = selectedOptions['Format'] || selectedOptions['Type'] || selectedOptions['Weight'];
 
+  // 1. Direct format lookup (e.g. "Mini Bar", "50g Bar", "Bites (15 Pcs)")
+  if (format && typeof product.pricingMatrix[format] === 'number') {
+    return product.pricingMatrix[format] as number;
+  }
+
+  // 2. Bar pricing with nested flavour: matrix[size][flavour]
   if (size && flavour) {
-    // Bar pricing: matrix[size][flavour]
     const sizeEntry = product.pricingMatrix[size];
     if (sizeEntry && typeof sizeEntry === 'object' && flavour in sizeEntry) {
       return (sizeEntry as Record<string, number>)[flavour];
     }
   }
 
+  // 3. Direct size lookup
+  if (size && typeof product.pricingMatrix[size] === 'number') {
+    return product.pricingMatrix[size] as number;
+  }
+
+  // 4. Bites pricing: matrix[flavour]
   if (flavour && !size) {
-    // Bites pricing: matrix[flavour]
     const flavourEntry = product.pricingMatrix[flavour];
     if (typeof flavourEntry === 'number') return flavourEntry;
+  }
+
+  // 5. Fallback: check if any option value matches a direct numeric key
+  for (const val of Object.values(selectedOptions)) {
+    if (val && typeof product.pricingMatrix[val] === 'number') {
+      return product.pricingMatrix[val] as number;
+    }
   }
 
   return product.price;
