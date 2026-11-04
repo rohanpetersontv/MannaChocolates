@@ -19,12 +19,14 @@ export interface Product {
   image?: string;
   /** Optional per-flavour descriptions shown when that flavour is selected */
   flavourDescriptions?: Record<string, string>;
+  /** Optional custom CSS object-position for fine-tuning card image framing (e.g. "center 70%") */
+  imagePosition?: string;
 }
 
 /**
  * Resolves the unit price for a product given selected options.
  * For bars: looks up pricingMatrix[Size][Flavour]
- * For bites: looks up pricingMatrix[Flavour]
+ * For bites: looks up pricingMatrix[Pack][Flavour] or pricingMatrix[Flavour] or pricingMatrix[Pack]
  * Falls back to product.price if no matrix defined.
  */
 export function resolveProductPrice(
@@ -36,6 +38,7 @@ export function resolveProductPrice(
   const size = selectedOptions['Size'];
   const flavour = selectedOptions['Flavour'];
   const format = selectedOptions['Format'] || selectedOptions['Type'] || selectedOptions['Weight'];
+  const pack = selectedOptions['Pack'];
 
   // 1. Direct format lookup (e.g. "Mini Bar", "50g Bar", "Bites (15 Pcs)")
   if (format && typeof product.pricingMatrix[format] === 'number') {
@@ -50,18 +53,31 @@ export function resolveProductPrice(
     }
   }
 
-  // 3. Direct size lookup
+  // 3. Bites pack pricing with nested flavour: matrix[pack][flavour]
+  if (pack && flavour) {
+    const packEntry = product.pricingMatrix[pack];
+    if (packEntry && typeof packEntry === 'object' && flavour in packEntry) {
+      return (packEntry as Record<string, number>)[flavour];
+    }
+  }
+
+  // 4. Direct pack lookup: matrix[pack] (e.g. "15 Pieces" -> 170, "30 Pieces" -> 320)
+  if (pack && typeof product.pricingMatrix[pack] === 'number') {
+    return product.pricingMatrix[pack] as number;
+  }
+
+  // 5. Direct size lookup
   if (size && typeof product.pricingMatrix[size] === 'number') {
     return product.pricingMatrix[size] as number;
   }
 
-  // 4. Bites pricing: matrix[flavour]
-  if (flavour && !size) {
+  // 6. Bites pricing: matrix[flavour]
+  if (flavour && !size && !pack) {
     const flavourEntry = product.pricingMatrix[flavour];
     if (typeof flavourEntry === 'number') return flavourEntry;
   }
 
-  // 5. Fallback: check if any option value matches a direct numeric key
+  // 7. Fallback: check if any option value matches a direct numeric key
   for (const val of Object.values(selectedOptions)) {
     if (val && typeof product.pricingMatrix[val] === 'number') {
       return product.pricingMatrix[val] as number;

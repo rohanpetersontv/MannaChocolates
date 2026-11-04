@@ -16,14 +16,14 @@ export interface GalleryItem {
 export const galleryItems: GalleryItem[] = [
   {
     id: 'butterscotch',
-    title: 'Butterscotch Crunch',
-    subtitle: 'Golden caramelized crunch bar with heart motifs',
+    title: 'Butterscotch Burst',
+    subtitle: 'Golden caramelized burst bar with heart motifs',
     category: 'New Flavour',
     badge: 'Coming Soon',
     image: '/images/butterscotch.jpg',
     description:
-      'Artisanal chocolate bar infused with caramelized butterscotch toffee pralines and crafted with intricate geometric and heart textures. A perfect balance of buttery crunch and smooth, melting sweetness.',
-    tags: ['Caramelized Crunch', 'Artisan Heart Pattern', 'Small Batch'],
+      'Artisanal chocolate bar infused with caramelized butterscotch toffee pralines and crafted with intricate geometric and heart textures. A perfect balance of buttery burst and smooth, melting sweetness.',
+    tags: ['Caramelized Burst', 'Artisan Heart Pattern', 'Small Batch'],
   },
   {
     id: 'berry-velvet',

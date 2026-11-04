@@ -218,35 +218,80 @@ describe('6. WhatsApp Message Builder & Link Generator', () => {
 });
 
 describe('7. Product Price Resolution', () => {
-  const berryBlueProduct: Product = {
-    id: 'berry-blue-special',
-    name: 'Berry Blue',
+  const berryVelvetProduct: Product = {
+    id: 'berry-velvet-special',
+    name: 'Berry Velvet',
     category: 'Special Flavours',
-    description: 'Test Berry Blue',
+    description: 'Test Berry Velvet',
     price: null,
     pricingMatrix: {
       'Mini Bar': 65,
-      'Bites (15 Pcs)': 180,
-      '50g Bar': 110,
-      '100g Bar': 190,
-      '150g Bar': 270,
-      '200g Bar': 340,
+      'Bites (15 Pcs)': 190,
+      'Bites (30 Pcs)': 360,
+      '50g Bar': 100,
+      '100g Bar': 180,
+      '150g Bar': 260,
+      '200g Bar': 330,
     },
     options: [
       {
         name: 'Format',
-        choices: ['Mini Bar', 'Bites (15 Pcs)', '50g Bar', '100g Bar', '150g Bar', '200g Bar'],
+        choices: ['Mini Bar', 'Bites (15 Pcs)', 'Bites (30 Pcs)', '50g Bar', '100g Bar', '150g Bar', '200g Bar'],
       },
     ],
   };
 
-  it('resolves prices for Berry Blue special formats (Mini Bar, Bites, 50g, 100g, 150g, 200g)', () => {
-    expect(resolveProductPrice(berryBlueProduct, { Format: 'Mini Bar' })).toBe(65);
-    expect(resolveProductPrice(berryBlueProduct, { Format: 'Bites (15 Pcs)' })).toBe(180);
-    expect(resolveProductPrice(berryBlueProduct, { Format: '50g Bar' })).toBe(110);
-    expect(resolveProductPrice(berryBlueProduct, { Format: '100g Bar' })).toBe(190);
-    expect(resolveProductPrice(berryBlueProduct, { Format: '150g Bar' })).toBe(270);
-    expect(resolveProductPrice(berryBlueProduct, { Format: '200g Bar' })).toBe(340);
+  it('resolves prices for Berry Velvet special formats (15 Pcs 190, 100g 180, 30 Pcs 360, Mini Bar 65)', () => {
+    expect(resolveProductPrice(berryVelvetProduct, { Format: 'Mini Bar' })).toBe(65);
+    expect(resolveProductPrice(berryVelvetProduct, { Format: 'Bites (15 Pcs)' })).toBe(190);
+    expect(resolveProductPrice(berryVelvetProduct, { Format: 'Bites (30 Pcs)' })).toBe(360);
+    expect(resolveProductPrice(berryVelvetProduct, { Format: '50g Bar' })).toBe(100);
+    expect(resolveProductPrice(berryVelvetProduct, { Format: '100g Bar' })).toBe(180);
+    expect(resolveProductPrice(berryVelvetProduct, { Format: '150g Bar' })).toBe(260);
+    expect(resolveProductPrice(berryVelvetProduct, { Format: '200g Bar' })).toBe(330);
+  });
+
+  const bitesProduct: Product = {
+    id: 'chocolate-bites',
+    name: 'Chocolate Bites',
+    category: 'Bites',
+    description: 'Test Bites',
+    price: null,
+    pricingMatrix: {
+      '15 Pieces': { Plain: 150, 'Fruit & Nuts': 160 },
+      '30 Pieces': { Plain: 280, 'Fruit & Nuts': 300 },
+    },
+    options: [
+      { name: 'Pack', choices: ['15 Pieces', '30 Pieces'] },
+      { name: 'Flavour', choices: ['Plain', 'Fruit & Nuts'] },
+    ],
+  };
+
+  it('resolves prices for Chocolate Bites 15 Pieces and 30 Pieces packs', () => {
+    expect(resolveProductPrice(bitesProduct, { Pack: '15 Pieces', Flavour: 'Plain' })).toBe(150);
+    expect(resolveProductPrice(bitesProduct, { Pack: '15 Pieces', Flavour: 'Fruit & Nuts' })).toBe(160);
+    expect(resolveProductPrice(bitesProduct, { Pack: '30 Pieces', Flavour: 'Plain' })).toBe(280);
+    expect(resolveProductPrice(bitesProduct, { Pack: '30 Pieces', Flavour: 'Fruit & Nuts' })).toBe(300);
+  });
+
+  const paanProduct: Product = {
+    id: 'paan-special-bites',
+    name: 'Paan Special Bites',
+    category: 'Special Flavours',
+    description: 'Test Paan',
+    price: null,
+    pricingMatrix: {
+      '15 Pieces': 170,
+      '30 Pieces': 320,
+    },
+    options: [
+      { name: 'Pack', choices: ['15 Pieces', '30 Pieces'] },
+    ],
+  };
+
+  it('resolves prices for Paan Special Bites 15 and 30 Pieces packs', () => {
+    expect(resolveProductPrice(paanProduct, { Pack: '15 Pieces' })).toBe(170);
+    expect(resolveProductPrice(paanProduct, { Pack: '30 Pieces' })).toBe(320);
   });
 
   const barProduct: Product = {

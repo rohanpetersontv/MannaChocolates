@@ -119,7 +119,7 @@ export const App: React.FC = () => {
       <div className="promo-bar w-full py-2 px-4 text-xs font-medium text-center flex items-center justify-center gap-2">
         <Sparkles className="w-3.5 h-3.5 text-gold flex-shrink-0" />
         <span>
-          ✨ <strong className="text-gold">Special Flavours Launching Soon:</strong> Berry Blue & Butterscotch Crunch! · Plus <strong className="text-gold">10% OFF</strong> first order with code <strong className="text-gold">FIRST10</strong>
+          ✨ <strong className="text-gold">Special Flavours Launching Soon:</strong> Berry Velvet & Butterscotch Burst! · Plus <strong className="text-gold">10% OFF</strong> first order with code <strong className="text-gold">FIRST10</strong>
         </span>
       </div>
 
@@ -616,9 +616,9 @@ export const App: React.FC = () => {
               <div className="flex items-start gap-2.5">
                 <span className="text-lg leading-none">🫐</span>
                 <div className="flex-1">
-                  <p className="text-xs font-bold text-cocoa leading-tight">Berry Blue — Special Flavour</p>
+                  <p className="text-xs font-bold text-cocoa leading-tight">Berry Velvet — Special Flavour</p>
                   <p className="text-[11px] text-espresso/70 leading-normal">
-                    Real wild blueberries infused in rich chocolate. Available in <strong>Mini Bars</strong>, <strong>Artisan Bites</strong>, and <strong>Bars (50g, 100g, 150g, 200g)</strong>.
+                    Succulent wild cranberries, roasted cashews, and golden raisins in velvety white chocolate. Available in <strong>Mini Bars</strong>, <strong>Artisan Bites (15 & 30 Pcs)</strong>, and <strong>Bars (50g, 100g, 150g, 200g)</strong>.
                   </p>
                 </div>
               </div>
@@ -628,9 +628,9 @@ export const App: React.FC = () => {
               <div className="flex items-start gap-2.5">
                 <span className="text-lg leading-none">🍯</span>
                 <div className="flex-1">
-                  <p className="text-xs font-bold text-cocoa leading-tight">Butterscotch Crunch — Coming Soon</p>
+                  <p className="text-xs font-bold text-cocoa leading-tight">Butterscotch Burst — Coming Soon</p>
                   <p className="text-[11px] text-espresso/70 leading-normal">
-                    Golden caramelized toffee praline crunch with heart motifs. Available in <strong>all bars, mini bars & bites</strong>.
+                    Golden caramelized toffee praline burst with heart motifs. Available in <strong>all bars, mini bars & bites</strong>.
                   </p>
                 </div>
               </div>
@@ -660,7 +660,7 @@ export const App: React.FC = () => {
               </button>
               
               <a
-                href={`https://wa.me/${(settings.whatsappNumber || '').replace(/\D/g,'')}?text=${encodeURIComponent('Hi Manna Chocolates! I saw that your new special flavours (Berry Blue & Butterscotch) are launching soon. I would love to inquire and place an order!')}`}
+                href={`https://wa.me/${(settings.whatsappNumber || '').replace(/\D/g,'')}?text=${encodeURIComponent('Hi Manna Chocolates! I saw that your new special flavours (Berry Velvet & Butterscotch Burst) are launching soon. I would love to inquire and place an order!')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={dismissPopup}

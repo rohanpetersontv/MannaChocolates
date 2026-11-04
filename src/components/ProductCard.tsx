@@ -108,6 +108,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
             src={imageSrc}
             alt={product.name}
             className="card-image-zoom w-full h-48 object-cover"
+            style={product.imagePosition ? { objectPosition: product.imagePosition } : undefined}
             loading="lazy"
           />
         </picture>
